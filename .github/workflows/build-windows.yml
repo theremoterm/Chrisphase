@@ -1,0 +1,33 @@
+name: Build Windows EXE
+
+# This allows you to manually trigger the build from the GitHub website
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # This tells GitHub to use a Windows server
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' # Matching your PyCharm setup
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygame pyinstaller
+
+      - name: Build the EXE with PyInstaller
+        run: pyinstaller --onefile --noconsole --name "ChrisVInPhase" main.py
+
+      - name: Upload the EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChrisVInPhase-Windows-EXE
+          path: dist/ChrisVInPhase.exe
